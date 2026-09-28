@@ -1,0 +1,22 @@
+@import "tailwindcss";
+/* src/index.css */
+
+@keyframes marqueeLTR {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.animate-marquee-ltr {
+  display: flex;
+  width: max-content;
+  animation: marqueeLTR 18s linear infinite;
+}
+
+/* Hover par pause karva mate (optional) */
+.animate-marquee-ltr:hover {
+  animation-play-state: paused;
+}
