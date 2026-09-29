@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const { user } = useAuth();
-  console.log(user);
-  console.log(user?.role);
-  
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   const topCategories = [
     { name: "All", path: "/shop" },
@@ -29,6 +29,40 @@ const Navbar = () => {
     { name: "Sale", path: "/sale" },
   ];
 
+  // =========================
+  // SEARCH
+  // =========================
+  const handleSearch = (e) => {
+    e.preventDefault();
+
+    const query = searchQuery.trim();
+
+    if (!query) {
+      return;
+    }
+
+    navigate(`/search?q=${encodeURIComponent(query)}`);
+
+    setSearchQuery("");
+    setIsSearchOpen(false);
+    setIsMobileMenuOpen(false);
+  };
+
+  // =========================
+  // LOGOUT
+  // =========================
+  const handleLogout = async () => {
+    try {
+      await logout();
+
+      setIsMobileMenuOpen(false);
+
+      navigate("/login");
+    } catch (error) {
+      console.error("logout error:", error);
+    }
+  };
+
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
       {/* Top Black Header Bar */}
@@ -42,14 +76,16 @@ const Navbar = () => {
             LUXE
           </Link>
 
-          {/* Center Main Nav Links (Desktop) */}
+          {/* Center Main Nav Links */}
           <nav className="hidden md:flex items-center space-x-6 text-[11px] uppercase tracking-widest text-white">
             {mainLinks.map((link) => (
               <NavLink
                 key={link.name}
                 to={link.path}
                 className={({ isActive }) =>
-                  `hover:text-orange-200 transition ${isActive ? "text-white font-semibold" : ""}`
+                  `hover:text-orange-200 transition ${
+                    isActive ? "text-white font-semibold" : ""
+                  }`
                 }
               >
                 {link.name}
@@ -59,12 +95,20 @@ const Navbar = () => {
 
           {/* Right Action Menu */}
           <div className="flex items-center space-x-4 text-[11px] tracking-wider">
-            <button className="hidden sm:inline-block hover:text-orange-200">
+            {/* Search */}
+            <button
+              onClick={() => setIsSearchOpen(!isSearchOpen)}
+              className="hidden sm:inline-block hover:text-orange-200"
+            >
               Search
             </button>
+
+            {/* Wishlist */}
             <Link to="/wishlist" className="hover:text-orange-200">
               Wishlist
             </Link>
+
+            {/* Cart */}
             <Link
               to="/cart"
               className="hover:text-orange-200 flex items-center gap-1"
@@ -75,21 +119,37 @@ const Navbar = () => {
               </span>
             </Link>
 
+            {/* =========================
+                LOGIN / LOGOUT
+            ========================= */}
 
-            <Link
-              to="/login"
-              className="hidden sm:inline-block hover:text-blue-400"
-            >
-              Login
-            </Link>
-            
+            {!user ? (
+              <Link
+                to="/login"
+                className="hidden sm:inline-block hover:text-blue-400"
+              >
+                Login
+              </Link>
+            ) : (
+              <button
+                onClick={handleLogout}
+                className="hidden sm:inline-block hover:text-red-400 transition"
+              >
+                Logout
+              </button>
+            )}
+
+            {/* Admin Dashboard */}
             {user?.role === "admin" && (
-            <Link to="/admin" className="...">
-              admin dashboard
-            </Link>
-          )}
+              <Link
+                to="/admin"
+                className="hidden sm:inline-block hover:text-orange-200"
+              >
+                admin dashboard
+              </Link>
+            )}
 
-            {/* Mobile Hamburger Toggle */}
+            {/* Mobile Hamburger */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="md:hidden text-white p-1 focus:outline-none"
@@ -119,9 +179,32 @@ const Navbar = () => {
             </button>
           </div>
         </div>
+
+        {/* Desktop Search Box */}
+        {isSearchOpen && (
+          <div className="max-w-7xl mx-auto mt-3">
+            <form onSubmit={handleSearch} className="flex">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="search products..."
+                autoFocus
+                className="w-full bg-white text-black px-4 py-2 text-xs outline-none"
+              />
+
+              <button
+                type="submit"
+                className="bg-[#D4B07B] text-black px-5 py-2 text-xs font-semibold"
+              >
+                SEARCH
+              </button>
+            </form>
+          </div>
+        )}
       </div>
 
-      {/* Sub-Header Categories Navigation Bar */}
+      {/* Category Navigation */}
       <div className="bg-[#EDD7B5] border-b border-gray-200 overflow-x-auto whitespace-nowrap scrollbar-none py-2 px-4 sm:px-8">
         <div className="max-w-7xl mx-auto flex items-center justify-start sm:justify-center space-x-6 sm:space-x-8 text-xs text-gray-700 font-medium">
           {topCategories.map((item) => (
@@ -136,9 +219,28 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Drawer */}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-black text-white px-6 py-6 space-y-4 text-xs uppercase tracking-wider border-t border-gray-800">
+          {/* Mobile Search */}
+          <form onSubmit={handleSearch} className="flex">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="search products..."
+              className="w-full bg-white text-black px-3 py-2 text-xs outline-none"
+            />
+
+            <button
+              type="submit"
+              className="bg-[#D4B07B] text-black px-3 py-2 text-xs font-semibold"
+            >
+              SEARCH
+            </button>
+          </form>
+
+          {/* Main Links */}
           <div className="space-y-3 pb-4 border-b border-gray-800">
             {mainLinks.map((link) => (
               <Link
@@ -151,19 +253,34 @@ const Navbar = () => {
               </Link>
             ))}
           </div>
-          <div className="pt-2 space-y-2">
-            <Link
-              to="/login"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="block text-gray-300 hover:text-white"
-            >
-              Login / Account
-              
-            </Link>
+
+          {/* Mobile Login / Logout */}
+          <div className="pt-2 space-y-3">
+            {!user ? (
+              <Link
+                to="/login"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block text-gray-300 hover:text-white"
+              >
+                Login / Account
+              </Link>
+            ) : (
+              <button
+                onClick={handleLogout}
+                className="block text-gray-300 hover:text-red-400"
+              >
+                Logout
+              </button>
+            )}
           </div>
 
+          {/* Mobile Admin */}
           {user?.role === "admin" && (
-            <Link to="/admin" className="...">
+            <Link
+              to="/admin"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block hover:text-orange-200"
+            >
               admin dashboard
             </Link>
           )}

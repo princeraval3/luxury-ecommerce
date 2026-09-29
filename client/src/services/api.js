@@ -1,11 +1,8 @@
 import axios from "axios";
-import {
-  getAccessToken,
-  setAccessToken,
-} from "../utils/tokenManager";
+import { getAccessToken, setAccessToken } from "../utils/tokenManager";
 
 const api = axios.create({
-  baseURL: "http://localhost:8000/api",
+  baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
 });
 
@@ -21,7 +18,7 @@ api.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 api.interceptors.response.use(
@@ -40,11 +37,11 @@ api.interceptors.response.use(
 
       try {
         const response = await axios.post(
-          "http://localhost:8000/api/auth/refresh-token",
+          `${import.meta.env.VITE_API_URL}/auth/refresh-token`,
           {},
           {
             withCredentials: true,
-          }
+          },
         );
 
         const newAccessToken = response.data.accessToken;
@@ -60,7 +57,7 @@ api.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

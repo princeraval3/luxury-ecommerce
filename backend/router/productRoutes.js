@@ -3,13 +3,13 @@ const express = require("express");
 const {
   createProduct,
   getAllProducts,
+  searchProducts,
   updateProduct,
   deleteProduct,
-  getProductById
+  getProductById,
 } = require("../controllers/productController");
 
 const upload = require("../middleware/uploadMiddleware");
-
 const authMiddleware = require("../middleware/authMiddleware");
 const adminMiddleware = require("../middleware/adminMiddleware");
 
@@ -21,14 +21,22 @@ const router = express.Router();
 
 router.get("/", getAllProducts);
 
-// singlee product router 
+// =========================
+// SEARCH PRODUCTS
+// =========================
+
+router.get("/search", searchProducts);
+
+// =========================
+// GET SINGLE PRODUCT
+// =========================
+
 router.get("/:id", getProductById);
+
 // =========================
 // CREATE PRODUCT
 // ADMIN ONLY
 // =========================
-
-
 
 router.post(
   "/",

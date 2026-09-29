@@ -68,12 +68,68 @@ const getAllProducts = async (req, res) => {
   }
 };
 
+// =========================
+// SEARCH PRODUCTS
+// =========================
+const searchProducts = async (req, res) => {
+  try {
+    const { q } = req.query;
 
+    if (!q || !q.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "search query is required",
+      });
+    }
 
-// singlee pageeeeeee 
+    const searchQuery = q.trim();
 
+    const products = await Product.find({
+      $or: [
+        {
+          name: {
+            $regex: searchQuery,
+            $options: "i",
+          },
+        },
+        {
+          brand: {
+            $regex: searchQuery,
+            $options: "i",
+          },
+        },
+        {
+          category: {
+            $regex: searchQuery,
+            $options: "i",
+          },
+        },
+        {
+          subCategory: {
+            $regex: searchQuery,
+            $options: "i",
+          },
+        },
+      ],
+    }).sort({ createdAt: -1 });
 
+    res.status(200).json({
+      success: true,
+      count: products.length,
+      products,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "failed to search products",
+      error: error.message,
+    });
+  }
+};
 
+// =========================
+// GET PRODUCT BY ID
+// =========================
 const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -215,7 +271,8 @@ const deleteProduct = async (req, res) => {
 module.exports = {
   createProduct,
   getAllProducts,
+  searchProducts,
   updateProduct,
   deleteProduct,
-  getProductById
+  getProductById,
 };

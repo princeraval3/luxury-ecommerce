@@ -33,6 +33,9 @@ import HomeLiving from "../pages/HomeLiving";
 import Lookbook from "../pages/Lookbook";
 import NotFound from "../pages/NotFound";
 
+// Search Page
+import SearchResults from "../pages/SearchResults";
+
 const AppRoutes = () => {
   return (
     <Routes>
@@ -43,32 +46,49 @@ const AppRoutes = () => {
       <Route path="/new-arrivals" element={<NewArrivals />} />
       <Route path="/sale" element={<Sale />} />
       <Route path="/product/:id" element={<ProductDetail />} />
-      
+
+      {/* Search */}
+      <Route path="/search" element={<SearchResults />} />
 
       <Route path="/cart" element={<Cart />} />
       <Route path="/wishlist" element={<Wishlist />} />
       <Route path="/login" element={<Auth />} />
 
       <Route path="/profile" element={<Profile />} />
+
       <Route path="/admin" element={<AdminDashboard />} />
       <Route path="/add-product" element={<AddProduct />} />
       <Route path="/admin/products" element={<AdminProducts />} />
-      <Route path="/admin/products/edit/:id" element={<EditProduct />} />
-      <Route path="/admin/categories" element={<AdminCategories />} />
-      <Route path="/admin/users" element={<UserManagement />} />
-      <Route path="/admin/orders" element={<AdminOrders />} />
+      <Route
+        path="/admin/products/edit/:id"
+        element={<EditProduct />}
+      />
+      <Route
+        path="/admin/categories"
+        element={<AdminCategories />}
+      />
+      <Route
+        path="/admin/users"
+        element={<UserManagement />}
+      />
+      <Route
+        path="/admin/orders"
+        element={<AdminOrders />}
+      />
+
       <Route path="/women" element={<WomensDresses />} />
       <Route path="/clothing" element={<Clothing />} />
       <Route path="/footwear" element={<Footwear />} />
-      <Route path="/bagsAccessories" element={<BagsAccessories />} />
+      <Route
+        path="/bagsAccessories"
+        element={<BagsAccessories />}
+      />
       <Route path="/watches" element={<Watches />} />
       <Route path="/jewellery" element={<Jewellery />} />
       <Route path="/beauty" element={<Beauty />} />
       <Route path="/homeLiving" element={<HomeLiving />} />
       <Route path="/lookbook" element={<Lookbook />} />
       <Route path="/404" element={<NotFound />} />
-
-
     </Routes>
   );
 };

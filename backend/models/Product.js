@@ -54,7 +54,6 @@ const productSchema = new mongoose.Schema(
       default: 0,
     },
 
-    
     images: [
       {
         type: String,
@@ -68,7 +67,7 @@ const productSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 const Product = mongoose.model("Product", productSchema);

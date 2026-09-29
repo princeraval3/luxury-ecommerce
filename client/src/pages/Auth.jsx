@@ -1,11 +1,14 @@
 import React, { useState } from "react";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { FcGoogle } from "react-icons/fc";
 import { FaApple } from "react-icons/fa";
 import { loginUser, registerUser } from "../services/authService";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Auth = () => {
+  const navigate = useNavigate();
   const { login } = useAuth();
   const [activeTab, setActiveTab] = useState("signin"); // 'signin' or 'signup'
   const [formData, setFormData] = useState({
@@ -15,7 +18,6 @@ const Auth = () => {
   });
 
   console.log(formData.name);
-  
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -44,11 +46,9 @@ const Auth = () => {
           password: formData.password,
         });
         console.log("login response:", data);
-        
-        
-        login(data.user , data.accessToken);
-        
-        
+
+        login(data.user, data.accessToken);
+        navigate("/");
       } else if (activeTab === "signup") {
         const data = await registerUser({
           name: formData.name,
@@ -57,6 +57,7 @@ const Auth = () => {
         });
         console.log("register response", data);
       }
+      navigate("/");
     } catch (error) {
       console.log(error.response?.data?.message || "login failed");
     }

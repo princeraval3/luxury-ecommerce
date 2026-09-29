@@ -7,6 +7,15 @@ export const getProducts = async () => {
   return response.data;
 };
 
+// search products
+export const searchProducts = async (query) => {
+  const response = await api.get(
+    `/products/search?q=${encodeURIComponent(query)}`
+  );
+
+  return response.data;
+};
+
 // create product
 export const createProduct = async (productData) => {
   const response = await api.post("/products", productData, {
@@ -36,7 +45,9 @@ export const deleteProduct = async (id) => {
   return response.data;
 };
 
+// get single product
 export const getProductById = async (id) => {
   const response = await api.get(`/products/${id}`);
+
   return response.data;
 };
