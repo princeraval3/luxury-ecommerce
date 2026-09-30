@@ -19,7 +19,10 @@ const app = express();
 
 app.use(
   cors({
-    origin: "https://luxury-ecommerce-eight.vercel.app",
+    origin: [
+      "http://localhost:5173",
+      "https://luxury-ecommerce-eight.vercel.app",
+    ],
     credentials: true,
   })
 );
